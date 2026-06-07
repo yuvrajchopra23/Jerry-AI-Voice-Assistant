@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+tempCodeRunnerFile.py
+vosk_config.txt
+
+# Vosk model (too large for github)
+vosk-model-en-in-0.5/
+
+# Memory (personal data)
+memory.json

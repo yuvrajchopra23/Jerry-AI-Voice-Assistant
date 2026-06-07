@@ -1,0 +1,12 @@
+groq
+flask
+flask-socketio
+pyttsx3
+pvporcupine
+sounddevice
+rapidfuzz
+pycaw
+comtypes
+wikipedia
+python-dotenv
+numpy

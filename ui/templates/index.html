@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jerry — AI Assistant</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0d0d0d;
+    color: #e0e0e0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: #111;
+    border-bottom: 1px solid #222;
+  }
+
+  .topbar .logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #7c6aff;
+    letter-spacing: 2px;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #888;
+    background: #1a1a1a;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #2a2a2a;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+    transition: background 0.3s;
+  }
+
+  .status-dot.thinking { background: #ff9800; animation: pulse 1s infinite; }
+  .status-dot.listening { background: #2196f3; animation: pulse 0.6s infinite; }
+  .status-dot.sleeping { background: #555; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  /* Typing indicator */
+.typing-bubble {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 16px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+}
+
+.typing-bubble span {
+    width: 7px;
+    height: 7px;
+    background: #7c6aff;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+}
+
+.typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+.typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+
+  /* ── Main layout ── */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 240px;
+    background: #111;
+    border-right: 1px solid #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    gap: 24px;
+  }
+
+  .sidebar h3 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  /* System controls */
+  .control-group { display: flex; flex-direction: column; gap: 12px; }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .control-row label {
+    font-size: 0.78rem;
+    color: #888;
+    width: 72px;
+  }
+
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: #2a2a2a;
+    outline: none;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #7c6aff;
+    cursor: pointer;
+  }
+
+  .slider-value {
+    font-size: 0.75rem;
+    color: #555;
+    width: 30px;
+    text-align: right;
+  }
+
+  /* Power buttons */
+  .power-buttons { display: flex; flex-direction: column; gap: 8px; }
+
+  .power-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    color: #888;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .power-btn:hover { border-color: #ff5555; color: #ff5555; }
+
+  .clear-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    color: #888;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .clear-btn:hover { border-color: #7c6aff; color: #7c6aff; }
+
+  /* Speak toggle */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+
+  .toggle-label {
+    font-size: 0.82rem;
+    color: #888;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    cursor: pointer;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .toggle-track {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #2a2a2a;
+    border-radius: 22px;
+    transition: background 0.3s;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background: #555;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+
+  .toggle-switch input:checked ~ .toggle-track { background: #7c6aff33; border: 1px solid #7c6aff55; }
+  .toggle-switch input:checked ~ .toggle-thumb { left: 21px; background: #7c6aff; }
+
+  /* ── Chat area ── */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    gap: 4px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.assistant { align-self: flex-start; align-items: flex-start; }
+  .msg.system { align-self: center; align-items: center; }
+
+  .msg-label {
+    font-size: 0.68rem;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .msg-bubble {
+    padding: 10px 15px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .msg.user .msg-bubble {
+    background: #7c6aff;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.assistant .msg-bubble {
+    background: #1a1a1a;
+    color: #ddd;
+    border: 1px solid #2a2a2a;
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg.system .msg-bubble {
+    background: #1a1a1a;
+    color: #555;
+    border: 1px solid #1e1e1e;
+    font-size: 0.78rem;
+    border-radius: 8px;
+  }
+
+  /* ── Input bar ── */
+  .input-bar {
+    padding: 16px 24px;
+    border-top: 1px solid #1e1e1e;
+    display: flex;
+    gap: 10px;
+    background: #0d0d0d;
+  }
+
+  .input-bar input {
+    flex: 1;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-bar input:focus { border-color: #7c6aff; }
+
+  .send-btn {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    background: #7c6aff;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .send-btn:hover { background: #6a59e0; }
+  .send-btn:disabled { background: #333; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="logo">JERRY</div>
+  <div class="status-pill">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Ready</span>
+  </div>
+  <div style="font-size:0.78rem; color:#555;">Powered by <span style="color:#7c6aff">Groq</span></div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+
+    <!-- Voice Output -->
+    <div>
+      <h3>Voice Output</h3>
+      <div class="toggle-row">
+        <span class="toggle-label">🔈 Speak responses</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="speakToggle" checked onchange="toggleSpeak(this.checked)">
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- System Controls -->
+    <div>
+      <h3>System</h3>
+      <div class="control-group">
+        <div class="control-row">
+          <label>🔊 Volume</label>
+          <input type="range" class="slider" id="volumeSlider" min="0" max="100" value="50"
+            oninput="document.getElementById('volumeVal').textContent=this.value"
+            onchange="sendSystemCommand('volume to ' + this.value)">
+          <span class="slider-value" id="volumeVal">50</span>
+        </div>
+        <div class="control-row">
+          <label>☀️ Bright</label>
+          <input type="range" class="slider" id="brightnessSlider" min="0" max="100" value="80"
+            oninput="document.getElementById('brightVal').textContent=this.value"
+            onchange="sendSystemCommand('brightness to ' + this.value)">
+          <span class="slider-value" id="brightVal">80</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Power -->
+    <div>
+      <h3>Power</h3>
+      <div class="power-buttons">
+        <button class="power-btn" onclick="sendSystemCommand('shutdown')">⏻ Shutdown</button>
+        <button class="power-btn" onclick="sendSystemCommand('restart')">↺ Restart</button>
+        <button class="power-btn" onclick="sendSystemCommand('sleep')">☽ Sleep</button>
+      </div>
+    </div>
+
+    <!-- Memory -->
+    <div>
+      <h3>Memory</h3>
+      <button class="clear-btn" onclick="clearHistory()">🗑 Clear Chat History</button>
+    </div>
+
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-area">
+    <div class="messages" id="messages"></div>
+    <div class="input-bar">
+      <input type="text" id="textInput" placeholder="Type a command or question..."
+        onkeydown="if(event.key==='Enter') sendMessage()">
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const socket = io();
+  let typingEl = null;
+
+  socket.on("connect", () => {
+    addMessage("system", "Connected to Jerry.");
+    loadHistory();
+  });
+
+  socket.on("message", (data) => {
+    addMessage(data.role, data.text);
+    setStatus("ready");
+    setSendEnabled(true);
+  });
+
+  socket.on("status", (data) => {
+    setStatus(data.status);
+  });
+
+  socket.on("typing", (data) => {
+    if (data.show) {
+      showTyping();
+    } else {
+      hideTyping();
+    }
+  });
+
+  socket.on("speak_toggled", (data) => {
+    addMessage("system", `Voice output ${data.enabled ? "enabled 🔈" : "disabled 🔇"}.`);
+  });
+
+  socket.on("history_cleared", () => {
+    document.getElementById("messages").innerHTML = "";
+    addMessage("system", "Chat history cleared.");
+  });
+
+  function sendMessage() {
+    const input = document.getElementById("textInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    setSendEnabled(false);
+    addMessage("user", text);      // show user msg instantly
+    socket.emit("user_message", { text });
+    input.value = "";
+    setStatus("thinking");
+  }
+
+  function showTyping() {
+    if (typingEl) return;
+    const messages = document.getElementById("messages");
+    typingEl = document.createElement("div");
+    typingEl.className = "msg assistant";
+    typingEl.innerHTML = `
+      <div class="msg-label">Jerry</div>
+      <div class="typing-bubble">
+        <span></span><span></span><span></span>
+      </div>
+    `;
+    messages.appendChild(typingEl);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    if (typingEl) {
+      typingEl.remove();
+      typingEl = null;
+    }
+  }
+
+  function toggleSpeak(enabled) {
+    socket.emit("toggle_speak", { enabled });
+  }
+
+  function sendSystemCommand(command) {
+    socket.emit("system_command", { command });
+    addMessage("system", "System: " + command);
+  }
+
+  function clearHistory() {
+    socket.emit("clear_history");
+  }
+
+  function addMessage(role, text) {
+    hideTyping();  // always hide typing before adding real message
+    const messages = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.className = `msg ${role}`;
+    const label = role === "user" ? "You" : role === "assistant" ? "Jerry" : "System";
+    div.innerHTML = `
+      <div class="msg-label">${label}</div>
+      <div class="msg-bubble">${text}</div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function setStatus(status) {
+    const dot = document.getElementById("statusDot");
+    const text = document.getElementById("statusText");
+    dot.className = "status-dot " + status;
+    const labels = {
+      ready: "Ready",
+      thinking: "Thinking...",
+      listening: "Listening...",
+      sleeping: "Sleeping"
+    };
+    text.textContent = labels[status] || status;
+  }
+
+  function setSendEnabled(enabled) {
+    document.getElementById("sendBtn").disabled = !enabled;
+  }
+
+  function loadHistory() {
+    fetch("/history")
+      .then(r => r.json())
+      .then(history => {
+        history.forEach(msg => addMessage(msg.role, msg.content));
+      });
+  }
+</script>
+</body>
+</html>
