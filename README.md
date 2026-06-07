@@ -1,16 +1,37 @@
 # Jerry — AI Voice Assistant 🎙️
 
-A Python-based intelligent voice assistant for Windows that combines 
-speech recognition, AI understanding, and system control.
+Jerry is an intelligent voice assistant for Windows built entirely from scratch in Python. 
+Unlike traditional voice assistants that rely on rigid command patterns, Jerry uses 
+**Groq's LLaMA 3.3** large language model to understand natural language — meaning you 
+can talk to him the way you'd talk to a person.
 
-## Features
--  Wake word activation ("Hello Jerry")
--  AI-powered understanding via Groq (LLaMA 3.3)
--  Text-to-speech responses
--  Opens desktop apps and websites
--  System control (volume, brightness, shutdown)
--  Persistent memory and self-learning
--  Web dashboard with real-time chat
+## What makes Jerry different?
+
+Most voice assistants match your command against a fixed list of rules.
+Jerry understands **intent** — you don't need to say the exact right words.
+Say "pull up youtube", "launch youtube" or "open youtube" — he knows what you mean.
+
+## What can Jerry do?
+
+-  **Wake word activation** — say "Hello Jerry" to wake him up
+-  **Natural language understanding** — powered by LLaMA 3.3 via Groq API
+-  **Voice responses** — speaks back using text-to-speech (toggleable)
+-  **App control** — opens any installed desktop or Microsoft Store app
+-  **Website control** — opens any website in your browser
+-  **System control** — adjust volume, brightness, shutdown, restart, sleep
+-  **Persistent memory** — remembers facts and learned commands across sessions
+-  **Self-learning** — learns new commands permanently from conversation
+-  **Web dashboard** — real-time chat UI with system controls at localhost:5000
+-  **Dual input** — works via both voice and text simultaneously
+
+## How it works
+
+1. Jerry listens for the wake word using Porcupine
+2. Captures your voice and transcribes it using Groq Whisper
+3. Sends the text to LLaMA 3.3 with your conversation history
+4. LLaMA decides the action (open app, answer question, system control, etc.)
+5. Jerry executes the action and responds — both on screen and by voice
+6. Everything is saved to memory for future conversations
 
 ## Tech Stack
 - Python 3.x
