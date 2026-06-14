@@ -42,3 +42,11 @@ def open_website(target: str):
     memory["websites"][name_key] = url
     save_memory(memory)
     speak(f"Opening {name_key}")
+
+def build_url(target: str) -> str:
+    target = target.strip()
+
+    if target.startswith(("http://", "https://")):
+        return target
+
+    return f"https://www.{sanitize_url_name(target)}.com"

@@ -8,26 +8,26 @@ from voice.speaker import speak
 from ui.events import emit_message, emit_status, emit_typing
 import threading
 
-_is_processing = False
+_voice_lock = threading.Lock()
+_text_lock = threading.Lock()
 
-def route(command: str):
-    global _is_processing
+def route(command: str, source: str = "text"):
+    print(f"[ROUTE] command='{command}' source='{source}'")
 
-    if _is_processing:
-        print("[SKIP] Already processing.")
+    lock = _voice_lock if source == "voice" else _text_lock
+
+    if not lock.acquire(blocking=False):
+        print(f"[SKIP] Already processing {source} command.")
         return
-
-    _is_processing = True
 
     try:
         add_to_history("user", command)
         emit_message("user", command)
         emit_status("thinking")
-        emit_typing(True)          # show typing dots immediately
+        emit_typing(True)
 
-        result = ask_ai(command)   # groq call happens here
-
-        emit_typing(False)         # hide typing dots
+        result = ask_ai(command)
+        emit_typing(False)
 
         action   = result.get("action", "chat")
         target   = result.get("target", "")
@@ -61,10 +61,11 @@ def route(command: str):
 
         if response:
             add_to_history("assistant", response)
-            emit_message("assistant", response)  # UI updates instantly
+            emit_message("assistant", response)
             emit_status("ready")
             threading.Thread(target=speak, args=(response,), daemon=True).start()
 
     finally:
         emit_typing(False)
-        _is_processing = False
+        emit_status("ready")
+        lock.release()

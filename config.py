@@ -10,6 +10,9 @@ SPEAK_ENABLED = True  # default mode
 
 CONVERSATION_HISTORY_LIMIT = 20
 
+MONGO_URI = os.getenv("MONGO_URI")
+JWT_SECRET = os.getenv("JWT_SECRET")
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # AI settings
 GROQ_MODEL = "llama-3.3-70b-versatile"           # fast + smart, free tier

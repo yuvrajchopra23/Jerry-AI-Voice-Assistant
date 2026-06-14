@@ -17,7 +17,101 @@
     flex-direction: column;
   }
 
-  /* ── Top bar ── */
+  /* ── Auth screens ── */
+  .auth-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #0d0d0d;
+  }
+
+  .auth-box {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 40px;
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .auth-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7c6aff;
+    letter-spacing: 4px;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    font-size: 0.82rem;
+    color: #555;
+    text-align: center;
+    margin-top: -12px;
+  }
+
+  .auth-box h2 {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .auth-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .auth-input:focus { border-color: #7c6aff; }
+
+  .auth-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #7c6aff;
+    color: white;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .auth-btn:hover { background: #6a59e0; }
+  .auth-btn:disabled { background: #333; cursor: not-allowed; }
+
+  .auth-switch {
+    font-size: 0.82rem;
+    color: #555;
+    text-align: center;
+  }
+
+  .auth-switch span {
+    color: #7c6aff;
+    cursor: pointer;
+  }
+
+  .auth-switch span:hover { text-decoration: underline; }
+
+  .auth-error {
+    font-size: 0.82rem;
+    color: #ff5555;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  /* ── Main dashboard ── */
+  .dashboard { display: none; flex-direction: column; height: 100vh; }
+
   .topbar {
     display: flex;
     align-items: center;
@@ -61,43 +155,29 @@
     0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
   }
 
-  /* Typing indicator */
-.typing-bubble {
+  .user-pill {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 12px 16px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 14px;
-    border-bottom-left-radius: 4px;
-    width: fit-content;
-}
-
-.typing-bubble span {
-    width: 7px;
-    height: 7px;
-    background: #7c6aff;
-    border-radius: 50%;
-    animation: bounce 1.2s infinite;
-}
-
-.typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
-.typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-6px); opacity: 1; }
-}
-
-  /* ── Main layout ── */
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: #888;
   }
 
-  /* ── Sidebar ── */
+  .logout-btn {
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    background: transparent;
+    color: #888;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: #ff5555; color: #ff5555; }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
   .sidebar {
     width: 240px;
     background: #111;
@@ -116,7 +196,6 @@
     margin-bottom: 8px;
   }
 
-  /* System controls */
   .control-group { display: flex; flex-direction: column; gap: 12px; }
 
   .control-row {
@@ -148,14 +227,8 @@
     cursor: pointer;
   }
 
-  .slider-value {
-    font-size: 0.75rem;
-    color: #555;
-    width: 30px;
-    text-align: right;
-  }
+  .slider-value { font-size: 0.75rem; color: #555; width: 30px; text-align: right; }
 
-  /* Power buttons */
   .power-buttons { display: flex; flex-direction: column; gap: 8px; }
 
   .power-btn {
@@ -186,7 +259,6 @@
 
   .clear-btn:hover { border-color: #7c6aff; color: #7c6aff; }
 
-  /* Speak toggle */
   .toggle-row {
     display: flex;
     align-items: center;
@@ -194,10 +266,7 @@
     padding: 4px 0;
   }
 
-  .toggle-label {
-    font-size: 0.82rem;
-    color: #888;
-  }
+  .toggle-label { font-size: 0.82rem; color: #888; }
 
   .toggle-switch {
     position: relative;
@@ -206,12 +275,7 @@
     cursor: pointer;
   }
 
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    position: absolute;
-  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
 
   .toggle-track {
     position: absolute;
@@ -223,10 +287,8 @@
 
   .toggle-thumb {
     position: absolute;
-    height: 16px;
-    width: 16px;
-    left: 3px;
-    bottom: 3px;
+    height: 16px; width: 16px;
+    left: 3px; bottom: 3px;
     background: #555;
     border-radius: 50%;
     transition: all 0.3s;
@@ -235,13 +297,7 @@
   .toggle-switch input:checked ~ .toggle-track { background: #7c6aff33; border: 1px solid #7c6aff55; }
   .toggle-switch input:checked ~ .toggle-thumb { left: 21px; background: #7c6aff; }
 
-  /* ── Chat area ── */
-  .chat-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+  .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
   .messages {
     flex: 1;
@@ -270,12 +326,7 @@
   .msg.assistant { align-self: flex-start; align-items: flex-start; }
   .msg.system { align-self: center; align-items: center; }
 
-  .msg-label {
-    font-size: 0.68rem;
-    color: #444;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+  .msg-label { font-size: 0.68rem; color: #444; text-transform: uppercase; letter-spacing: 1px; }
 
   .msg-bubble {
     padding: 10px 15px;
@@ -284,28 +335,37 @@
     line-height: 1.5;
   }
 
-  .msg.user .msg-bubble {
-    background: #7c6aff;
-    color: #fff;
-    border-bottom-right-radius: 4px;
-  }
+  .msg.user .msg-bubble { background: #7c6aff; color: #fff; border-bottom-right-radius: 4px; }
+  .msg.assistant .msg-bubble { background: #1a1a1a; color: #ddd; border: 1px solid #2a2a2a; border-bottom-left-radius: 4px; }
+  .msg.system .msg-bubble { background: #1a1a1a; color: #555; border: 1px solid #1e1e1e; font-size: 0.78rem; border-radius: 8px; }
 
-  .msg.assistant .msg-bubble {
+  .typing-bubble {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 16px;
     background: #1a1a1a;
-    color: #ddd;
     border: 1px solid #2a2a2a;
+    border-radius: 14px;
     border-bottom-left-radius: 4px;
+    width: fit-content;
   }
 
-  .msg.system .msg-bubble {
-    background: #1a1a1a;
-    color: #555;
-    border: 1px solid #1e1e1e;
-    font-size: 0.78rem;
-    border-radius: 8px;
+  .typing-bubble span {
+    width: 7px; height: 7px;
+    background: #7c6aff;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
   }
 
-  /* ── Input bar ── */
+  .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
   .input-bar {
     padding: 16px 24px;
     border-top: 1px solid #1e1e1e;
@@ -345,94 +405,185 @@
 </head>
 <body>
 
-<!-- Top bar -->
-<div class="topbar">
-  <div class="logo">JERRY</div>
-  <div class="status-pill">
-    <div class="status-dot" id="statusDot"></div>
-    <span id="statusText">Ready</span>
+<!-- ── Login Screen ── -->
+<div class="auth-screen" id="loginScreen">
+  <div class="auth-box">
+    <div class="auth-logo">JERRY</div>
+    <p class="auth-subtitle">AI Voice Assistant</p>
+    <h2>Welcome back</h2>
+    <input class="auth-input" type="text" id="loginUsername" placeholder="Username or email">
+    <input class="auth-input" type="password" id="loginPassword" placeholder="Password">
+    <p class="auth-error" id="loginError"></p>
+    <button class="auth-btn" onclick="handleLogin()">Login</button>
+    <p class="auth-switch">Don't have an account? <span onclick="showSignup()">Sign up</span></p>
   </div>
-  <div style="font-size:0.78rem; color:#555;">Powered by <span style="color:#7c6aff">Groq</span></div>
 </div>
 
-<!-- Main -->
-<div class="main">
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-
-    <!-- Voice Output -->
-    <div>
-      <h3>Voice Output</h3>
-      <div class="toggle-row">
-        <span class="toggle-label">🔈 Speak responses</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="speakToggle" checked onchange="toggleSpeak(this.checked)">
-          <span class="toggle-track"></span>
-          <span class="toggle-thumb"></span>
-        </label>
-      </div>
-    </div>
-
-    <!-- System Controls -->
-    <div>
-      <h3>System</h3>
-      <div class="control-group">
-        <div class="control-row">
-          <label>🔊 Volume</label>
-          <input type="range" class="slider" id="volumeSlider" min="0" max="100" value="50"
-            oninput="document.getElementById('volumeVal').textContent=this.value"
-            onchange="sendSystemCommand('volume to ' + this.value)">
-          <span class="slider-value" id="volumeVal">50</span>
-        </div>
-        <div class="control-row">
-          <label>☀️ Bright</label>
-          <input type="range" class="slider" id="brightnessSlider" min="0" max="100" value="80"
-            oninput="document.getElementById('brightVal').textContent=this.value"
-            onchange="sendSystemCommand('brightness to ' + this.value)">
-          <span class="slider-value" id="brightVal">80</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Power -->
-    <div>
-      <h3>Power</h3>
-      <div class="power-buttons">
-        <button class="power-btn" onclick="sendSystemCommand('shutdown')">⏻ Shutdown</button>
-        <button class="power-btn" onclick="sendSystemCommand('restart')">↺ Restart</button>
-        <button class="power-btn" onclick="sendSystemCommand('sleep')">☽ Sleep</button>
-      </div>
-    </div>
-
-    <!-- Memory -->
-    <div>
-      <h3>Memory</h3>
-      <button class="clear-btn" onclick="clearHistory()">🗑 Clear Chat History</button>
-    </div>
-
+<!-- ── Signup Screen ── -->
+<div class="auth-screen" id="signupScreen" style="display:none;">
+  <div class="auth-box">
+    <div class="auth-logo">JERRY</div>
+    <p class="auth-subtitle">AI Voice Assistant</p>
+    <h2>Create your account</h2>
+    <input class="auth-input" type="text" id="signupUsername" placeholder="Username">
+    <input class="auth-input" type="email" id="signupEmail" placeholder="Email">
+    <input class="auth-input" type="password" id="signupPassword" placeholder="Password (min 6 chars)">
+    <p class="auth-error" id="signupError"></p>
+    <button class="auth-btn" onclick="handleSignup()">Create Account</button>
+    <p class="auth-switch">Already have an account? <span onclick="showLogin()">Login</span></p>
   </div>
+</div>
 
-  <!-- Chat -->
-  <div class="chat-area">
-    <div class="messages" id="messages"></div>
-    <div class="input-bar">
-      <input type="text" id="textInput" placeholder="Type a command or question..."
-        onkeydown="if(event.key==='Enter') sendMessage()">
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+<!-- ── Dashboard ── -->
+<div class="dashboard" id="dashboard">
+
+  <div class="topbar">
+    <div class="logo">JERRY</div>
+    <div class="status-pill">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Ready</span>
+    </div>
+    <div class="user-pill">
+      <span style="color:#7c6aff" id="topUsername"></span>
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
   </div>
 
+  <div class="main">
+    <div class="sidebar">
+
+      <div>
+        <h3>Voice Output</h3>
+        <div class="toggle-row">
+          <span class="toggle-label">🔈 Speak responses</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="speakToggle" checked onchange="toggleSpeak(this.checked)">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <h3>System</h3>
+        <div class="control-group">
+          <div class="control-row">
+            <label>🔊 Volume</label>
+            <input type="range" class="slider" min="0" max="100" value="50"
+              oninput="document.getElementById('volumeVal').textContent=this.value"
+              onchange="sendSystemCommand('volume to ' + this.value)">
+            <span class="slider-value" id="volumeVal">50</span>
+          </div>
+          <div class="control-row">
+            <label>☀️ Bright</label>
+            <input type="range" class="slider" min="0" max="100" value="80"
+              oninput="document.getElementById('brightVal').textContent=this.value"
+              onchange="sendSystemCommand('brightness to ' + this.value)">
+            <span class="slider-value" id="brightVal">80</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Power</h3>
+        <div class="power-buttons">
+          <button class="power-btn" onclick="sendSystemCommand('shutdown')">⏻ Shutdown</button>
+          <button class="power-btn" onclick="sendSystemCommand('restart')">↺ Restart</button>
+          <button class="power-btn" onclick="sendSystemCommand('sleep')">☽ Sleep</button>
+        </div>
+      </div>
+
+      <div>
+        <h3>Memory</h3>
+        <button class="clear-btn" onclick="clearHistory()">🗑 Clear Chat History</button>
+      </div>
+
+    </div>
+
+    <div class="chat-area">
+      <div class="messages" id="messages"></div>
+      <div class="input-bar">
+        <input type="text" id="textInput" placeholder="Type a command or question..."
+          onkeydown="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-  const socket = io();
-  let typingEl = null;
-
-  socket.on("connect", () => {
-    addMessage("system", "Connected to Jerry.");
-    loadHistory();
+  const socket = io({
+    reconnection: true,
+    reconnectionDelay: 2000,
+    reconnectionAttempts: 10
   });
+  
+  let typingEl = null;
+  let authToken = localStorage.getItem("jerry_token");
+  let currentUser = localStorage.getItem("jerry_username");
+  let isDashboardVisible = false;
+
+  // ── On page load ──
+  window.onload = () => {
+    authToken = localStorage.getItem("jerry_token");
+    currentUser = localStorage.getItem("jerry_username");
+    if (authToken && currentUser) {
+        // Verify token is still valid before showing dashboard
+        fetch("/auth/verify", {
+            headers: { "Authorization": `Bearer ${authToken}` }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.valid) {
+                showDashboard(currentUser);
+                isDashboardVisible = true;
+                socket.emit("authenticate", { token: authToken });
+            } else {
+                // Token invalid — clear and show login
+                localStorage.clear();
+                authToken = null;
+                currentUser = null;
+            }
+        })
+        .catch(() => {
+            localStorage.clear();
+            authToken = null;
+            currentUser = null;
+        });
+    }
+};
+
+  // ── Socket events ──
+  socket.on("connect", () => {
+    console.log("[SOCKET] Connected:", socket.id);
+    // Don't auto-authenticate on connect at all
+    // Login button handles authentication
+});
+
+  socket.on("disconnect", (reason) => {
+    console.log("[SOCKET] Disconnected:", reason);
+    // Never touch the UI on disconnect — socket will reconnect automatically
+  });
+
+  socket.on("reconnect", () => {
+    console.log("[SOCKET] Reconnected");
+    authToken = localStorage.getItem("jerry_token");
+    if (authToken) {
+      socket.emit("authenticate", { token: authToken });
+    }
+  });
+
+  socket.on("auth_success", (data) => {
+    console.log("[AUTH SUCCESS] Received:", data);
+    isDashboardVisible = true;
+    showDashboard(data.username);
+    loadHistory();
+});
+
+  socket.on("auth_error", (data) => {
+    console.log("[AUTH ERROR]", data.error);
+    // Do nothing — don't touch UI at all
+});
 
   socket.on("message", (data) => {
     addMessage(data.role, data.text);
@@ -440,16 +591,10 @@
     setSendEnabled(true);
   });
 
-  socket.on("status", (data) => {
-    setStatus(data.status);
-  });
+  socket.on("status", (data) => setStatus(data.status));
 
   socket.on("typing", (data) => {
-    if (data.show) {
-      showTyping();
-    } else {
-      hideTyping();
-    }
+    data.show ? showTyping() : hideTyping();
   });
 
   socket.on("speak_toggled", (data) => {
@@ -461,14 +606,123 @@
     addMessage("system", "Chat history cleared.");
   });
 
+  // ── Auth functions ──
+  async function handleLogin() {
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const errEl = document.getElementById("loginError");
+    errEl.textContent = "";
+
+    if (!username || !password) {
+        errEl.textContent = "Please fill in all fields.";
+        return;
+    }
+
+    try {
+        const res = await fetch("/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        console.log("[LOGIN] Status:", res.status);
+        console.log("[LOGIN] Data:", data);
+
+        if (!res.ok) {
+            errEl.textContent = data.error;
+            return;
+        }
+
+        authToken = data.token;
+        currentUser = data.username;
+        localStorage.setItem("jerry_token", authToken);
+        localStorage.setItem("jerry_username", currentUser);
+
+        console.log("[LOGIN] Emitting authenticate...");
+        socket.emit("authenticate", { token: authToken });
+        console.log("[LOGIN] Authenticate emitted");
+
+    } catch (e) {
+        console.log("[LOGIN] Exception:", e);
+        errEl.textContent = "Connection error. Try again.";
+    }
+}
+
+  async function handleSignup() {
+    const username = document.getElementById("signupUsername").value.trim();
+    const email    = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
+    const errEl    = document.getElementById("signupError");
+    errEl.textContent = "";
+
+    if (!username || !email || !password) {
+      errEl.textContent = "Please fill in all fields.";
+      return;
+    }
+
+    try {
+      const res = await fetch("/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errEl.textContent = data.error;
+        return;
+      }
+
+      authToken = data.token;
+      currentUser = data.username;
+      localStorage.setItem("jerry_token", authToken);
+      localStorage.setItem("jerry_username", currentUser);
+
+      socket.emit("authenticate", { token: authToken });
+
+    } catch (e) {
+      errEl.textContent = "Connection error. Try again.";
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("jerry_token");
+    localStorage.removeItem("jerry_username");
+    authToken = null;
+    currentUser = null;
+    isDashboardVisible = false;
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("messages").innerHTML = "";
+  }
+
+  function showLogin() {
+    document.getElementById("signupScreen").style.display = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+  }
+
+  function showSignup() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("signupScreen").style.display = "flex";
+  }
+
+  function showDashboard(username) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("signupScreen").style.display = "none";
+    const dash = document.getElementById("dashboard");
+    dash.style.display = "flex";
+    document.getElementById("topUsername").textContent = username;
+  }
+
+  // ── Chat functions ──
   function sendMessage() {
     const input = document.getElementById("textInput");
     const text = input.value.trim();
     if (!text) return;
-
     setSendEnabled(false);
-    addMessage("user", text);      // show user msg instantly
-    socket.emit("user_message", { text });
+    addMessage("user", text);
+    socket.emit("user_message", { text, token: authToken });
     input.value = "";
     setStatus("thinking");
   }
@@ -482,17 +736,13 @@
       <div class="msg-label">Jerry</div>
       <div class="typing-bubble">
         <span></span><span></span><span></span>
-      </div>
-    `;
+      </div>`;
     messages.appendChild(typingEl);
     messages.scrollTop = messages.scrollHeight;
   }
 
   function hideTyping() {
-    if (typingEl) {
-      typingEl.remove();
-      typingEl = null;
-    }
+    if (typingEl) { typingEl.remove(); typingEl = null; }
   }
 
   function toggleSpeak(enabled) {
@@ -501,7 +751,6 @@
 
   function sendSystemCommand(command) {
     socket.emit("system_command", { command });
-    addMessage("system", "System: " + command);
   }
 
   function clearHistory() {
@@ -509,15 +758,14 @@
   }
 
   function addMessage(role, text) {
-    hideTyping();  // always hide typing before adding real message
+    hideTyping();
     const messages = document.getElementById("messages");
     const div = document.createElement("div");
     div.className = `msg ${role}`;
     const label = role === "user" ? "You" : role === "assistant" ? "Jerry" : "System";
     div.innerHTML = `
       <div class="msg-label">${label}</div>
-      <div class="msg-bubble">${text}</div>
-    `;
+      <div class="msg-bubble">${text}</div>`;
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
   }
@@ -525,6 +773,7 @@
   function setStatus(status) {
     const dot = document.getElementById("statusDot");
     const text = document.getElementById("statusText");
+    if (!dot || !text) return;
     dot.className = "status-dot " + status;
     const labels = {
       ready: "Ready",
@@ -536,16 +785,29 @@
   }
 
   function setSendEnabled(enabled) {
-    document.getElementById("sendBtn").disabled = !enabled;
+    const btn = document.getElementById("sendBtn");
+    if (btn) btn.disabled = !enabled;
   }
 
   function loadHistory() {
     fetch("/history")
       .then(r => r.json())
       .then(history => {
-        history.forEach(msg => addMessage(msg.role, msg.content));
-      });
+        if (Array.isArray(history)) {
+          history.forEach(msg => addMessage(msg.role, msg.content));
+        }
+      })
+      .catch(e => console.log("[HISTORY ERROR]", e));
   }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const loginVisible = document.getElementById("loginScreen").style.display !== "none";
+      const signupVisible = document.getElementById("signupScreen").style.display !== "none";
+      if (loginVisible) handleLogin();
+      else if (signupVisible) handleSignup();
+    }
+  });
 </script>
 </body>
 </html>
