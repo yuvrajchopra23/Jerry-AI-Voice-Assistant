@@ -113,3 +113,63 @@ def handle_switch(data):
 
 def start_ui():
     socketio.run(app, host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+
+@app.route("/command", methods=["POST"])
+def handle_command():
+    import core.router as router
+    from flask import request, jsonify
+
+    data = request.get_json(silent=True) or {}
+    command = data.get("text", "").strip()
+
+    if not command:
+        return jsonify({"response": "Empty command."}), 400
+
+    print(f"[WIDGET] Command: {command}")
+
+    response_holder = []
+
+    # Save original functions
+    original_emit_message = router.emit_message
+    original_emit_status = router.emit_status
+    original_emit_typing = router.emit_typing
+
+    # Capture assistant response while still forwarding events
+    def capture_emit_message(role, text):
+        print(f"[CAPTURE] {role}: {text}")
+
+        if role == "assistant":
+            response_holder.append(text)
+
+        original_emit_message(role, text)
+
+    def capture_emit_status(status):
+        original_emit_status(status)
+
+    def capture_emit_typing(value):
+        original_emit_typing(value)
+
+    try:
+        # Patch router's imported functions
+        router.emit_message = capture_emit_message
+        router.emit_status = capture_emit_status
+        router.emit_typing = capture_emit_typing
+
+        # Execute the command
+        router.route(command, "text")
+
+    except Exception as e:
+        print("[ERROR]", e)
+        return jsonify({"response": str(e)}), 500
+
+    finally:
+        # Restore originals
+        router.emit_message = original_emit_message
+        router.emit_status = original_emit_status
+        router.emit_typing = original_emit_typing
+
+    response = response_holder[0] if response_holder else "Done."
+
+    print(f"[WIDGET RESPONSE] {response}")
+
+    return jsonify({"response": response}), 200
